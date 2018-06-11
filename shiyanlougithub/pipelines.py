@@ -11,9 +11,12 @@ class ShiyanlougithubPipeline(object):
         return item
 
     def open_spider(self, spider):
-        Session = self.sessionmaker()
+        Session = sessionmaker(bind=engine)
         self.session = Session()
 
     def close_spider(self, spider):
         self.session.commit()
         self.session.close()
+
+if __name__ == '__main__':
+    print(sessionmaker, Repository)
