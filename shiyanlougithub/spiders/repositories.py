@@ -9,7 +9,6 @@ class RepositoriesSpider(scrapy.Spider):
     @property
     def start_urls(self):
         url_tmp = 'https://github.com/shiyanlou?page={}&tab=repositories'
-#        url_tmp = "https://github.com/shiyanlou?page={}&tab=repositories"
         urls = (url_tmp.format(i) for i in range(1, 5))
         return urls
 
@@ -18,4 +17,4 @@ class RepositoriesSpider(scrapy.Spider):
             yield ShiyanlougithubItem({
                 'name': rep.xpath('.//a[@itemprop="name codeRepository"]/text()').re_first('\n\s*(.*)'),
                 'update_time': rep.xpath('.//relative-time/@datetime').extract_first()
-                })
+            })
