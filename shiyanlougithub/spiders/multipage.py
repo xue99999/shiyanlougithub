@@ -18,7 +18,6 @@ class MultipageSpider(scrapy.Spider):
         
             item['name'] = rep.xpath('.//a[@itemprop="name codeRepository"]/text()').re_first('\n\s*(.*)')
             item['update_time'] = rep.xpath('.//relative-time/@datetime').extract_first()
-            print('--------------------{}-----------------------------'.format(item['update_time']))
            
             detail_href = rep.xpath('.//a[@itemprop="name codeRepository"]/@href').extract_first()
 
@@ -27,17 +26,18 @@ class MultipageSpider(scrapy.Spider):
             request.meta['item'] = item
             yield request
 
+
     def parse_detail(self, response):
         item = response.meta['item']
         for number in response.css('ul.numbers-summary li'):
             type_text = number.xpath('.//a/text()').re_first('\n\s*(.*)\n')
-            number_text = number.xpath('.//span[@class="text-emphasized"]/text()').re_first('\n\s*(.*)\n')
+            number_text = number.xpath('.//span[@class="num text-emphasized"]/text()').re_first('\n\s*(.*)\n')
             if type_text and number_text:
                 number_text = number_text.replace(',', '')
                 if type_text in ('commit', 'commits'):
                     item['commits'] = int(number_text)
-                if type_text in ('branch', 'branches'):
+                elif type_text in ('branch', 'branches'):
                     item['branches'] = int(number_text)
-                if type_text in ('release', 'releases'):
+                elif type_text in ('release', 'releases'):
                     item['releases'] = int(number_text)
-            yield item
+        yield item
